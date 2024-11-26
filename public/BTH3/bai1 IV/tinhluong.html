@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width initial-scale=1.0" />
+        <title>Tính Lương</title>
+
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+
+            #tinhluongform {
+                border: 2px solid black;
+                padding: 20px;
+                border-radius: 8px;
+                background-color: rgb(184, 126, 84);
+                width: 300px;
+                text-align: center;
+            }
+
+            #tinhluongform label {
+                width: 120px; /* Chiều rộng cố định cho nhãn */
+                margin-right: 10px;
+                text-align: right;
+            }
+
+            #tinhluongform input[type="text"] {
+                flex: 1;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            /* Căn chỉnh nhãn và input trên cùng một hàng */
+            #tinhluongform div {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            /* Căn chỉnh các phần tử trong form */
+            #tinhluongform div {
+                margin-bottom: 10px;
+            }
+
+            /* Tùy chỉnh nút */
+            #tinhluongform button {
+                background-color: #0073e6;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            #tinhluongform button:hover {
+                background-color: #005bb5;
+            }
+        </style>
+    </head>
+
+    <body>
+        <form id="tinhluongform" action="tinhluong.php" method="POST" style="border: 1;">
+            <div>
+                <label for="manvInput">Mã Nhân Viên</label>
+                <input type="text" id="manvInput" name="manvInput">
+            </div>
+
+            <div>
+                <label for="nameInput">Tên nhân viên</label>
+                <input type="text" id="nameInput" name="nameInput">
+            </div>
+
+            <div>
+                <label for="dateInput">Số ngày làm việc</label>
+                <input type="text" id="dateInput" name="dateInput">
+            </div>
+
+            <div>
+                <label for="luongInput">Lương ngày</label>
+                <input type="text" id="luongInput" name="luongInput">
+            </div>
+
+            <div>
+                <label for="quanliInput">Nhân viên quản lí</label>
+                <input type="checkbox" id="quanliInput" name="quanliInput">
+            </div>
+
+            <button type="submit">Lương tháng</button>
+        </form>
+    </body>
+</html>

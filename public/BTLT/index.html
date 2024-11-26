@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        /* Tổng quan */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h3 {
+            margin-top: 20px;
+            color: #444;
+        }
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
+        }
+
+        /* Form thêm công việc */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        form input, form textarea, form button {
+            font-size: 16px;
+        }
+        form input, form textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        form input:focus, form textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        form button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Thanh tìm kiếm */
+        #search {
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        #search:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        /* Bảng công việc */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        table tr.completed td {
+            background-color: #d4edda; /* Màu nền xanh lá nhạt */
+            color: #155724;
+        }
+        table td input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .delete-btn {
+            padding: 5px 10px;
+            font-size: 14px;
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .delete-btn:hover {
+            background-color: #a71d2a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Form thêm công việc -->
+    <form id="addTaskForm"> 
+        <input type="text" name="title" placeholder="Tiêu đề công việc" required>
+        <textarea name="description" placeholder="Mô tả công việc"></textarea>
+        <button type="submit">Thêm công việc</button>
+    </form>
+
+    <hr>
+
+    <!-- Thanh tìm kiếm -->
+    <h3>Danh sách công việc</h3>
+    <input type="text" id="search" placeholder="Tìm kiếm công việc...">
+
+    <!-- Bảng công việc -->
+    <table>
+        <thead>
+            <tr>
+                <th>Tên công việc</th>
+                <th>Mô tả</th>
+                <th>Hoàn thành</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="taskList"></tbody>
+    </table>
+
+    <script>
+        const tasks = [
+            { id: 1, title: 'Học JavaScript', description: 'Tìm hiểu về ES6 và ReactJS', completed: false },
+            { id: 2, title: 'Thiết kế giao diện', description: 'Cải thiện UI cho ứng dụng', completed: true },
+        ];
+
+        const renderTasks = (filter = '') => {
+            const taskList = document.querySelector('#taskList');
+            const filteredTasks = tasks.filter(task =>
+                task.title.toLowerCase().includes(filter.toLowerCase()) ||
+                task.description.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            taskList.innerHTML = filteredTasks.map(task => `
+                <tr class="${task.completed ? 'completed' : ''}">
+                    <td>${task.title}</td>
+                    <td>${task.description}</td>
+                    <td>
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                            onchange="toggleTaskCompletion(${task.id}, this.checked)">
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        const toggleTaskCompletion = (id, isChecked) => {
+            const task = tasks.find(t => t.id === id);
+            if (task) task.completed = isChecked;
+            renderTasks(document.querySelector('#search').value);
+        };
+
+        const deleteTask = (id) => {
+            const index = tasks.findIndex(t => t.id === id);
+            if (index > -1) {
+                tasks.splice(index, 1);
+                renderTasks(document.querySelector('#search').value);
+            }
+        };
+
+        // Thêm sự kiện tìm kiếm
+        document.querySelector('#search').addEventListener('input', (e) => {
+            renderTasks(e.target.value);
+        });
+
+        // Thêm sự kiện submit để thêm công việc mới
+        document.querySelector('#addTaskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = e.target.title.value.trim();
+            const description = e.target.description.value.trim();
+            if (title) {
+                tasks.push({ id: tasks.length + 1, title, description, completed: false });
+                e.target.reset();
+                renderTasks();
+            }
+        });
+
+        renderTasks();
+    </script>
+</body>
+</html>
